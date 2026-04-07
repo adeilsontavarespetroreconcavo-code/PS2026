@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petro Poços</title>
+    <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petro Poços</title>
+    
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#004d26">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="PSdigital.png">
+    <style>
+        :root { --primary: #004d26; --bg: #f0f2f5; --text: #333; --white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
+        header { background: var(--primary); color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 1.2em; position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 500px; margin: 0 auto; padding: 15px; }
+        .screen { display: none; }
+        .active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; position: relative; }
+        .logo-box { text-align: center; margin-bottom: 20px; }
+        .logo-box img { max-width: 150px; height: auto; border-radius: 8px; }
+        label { display: block; font-weight: bold; font-size: 0.85em; color: var(--primary); margin: 10px 0 5px 0; text-transform: uppercase; }
+        .section-title { background: #e8f5e9; color: var(--primary); padding: 8px 12px; border-radius: 6px; font-weight: bold; margin: 20px 0 10px 0; border-left: 4px solid var(--primary); }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 1em; background: #fafafa; outline: none; }
+        .row { display: flex; gap: 10px; }
+        .col { flex: 1; }
+        button { width: 100%; padding: 16px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 1em; transition: 0.2s; margin-top: 10px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-outline { background: white; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-whatsapp { background: #25d366; color: white; border: none; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-pdf { background: #d32f2f; color: white; border: none; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-delete-small { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: #ff4d4d; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .view-content { background: #fff; padding: 15px; border-radius: 8px; border-left: 5px solid var(--primary); line-height: 1.6; font-size: 0.9em; margin-bottom: 15px; }
+        .view-item { margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .view-item b { color: var(--primary); display: block; font-size: 0.8em; text-transform: uppercase; }
+        @media print { header, button, .btn-delete-small, #areaBotoesLeitura, hr, .no-print { display: none !important; } .container { max-width: 100%; padding: 0; } .card { box-shadow: none; border: none; } body { background: white; } }
+    </style>
+</head>
+<body>
+
+<body>
+
+<header id="mainHeader">PETRO POÇOS</header>
+
+<div class="container">
+    <div id="screenLogin" class="screen active">
+        <div class="logo-box">
+            <img src="PSdigital.png" alt="Logo" onerror="this.src='https://via.placeholder.com/150?text=PS+Digital'">
+            <h2 style="color: var(--primary);">Login</h2>
+        </div>
+        <div class="card">
+            <input type="text" id="loginUser" placeholder="Usuário">
+            <input type="password" id="loginPass" placeholder="Senha" style="margin-top:10px">
+            <button class="btn-primary" onclick="realizarLogin()">ENTRAR</button>
+            <p onclick="resetAcesso()" style="text-align:center; font-size:0.7em; color:#999; cursor:pointer; margin-top:15px;">Resetar para Padrão</p>
+        </div>
+    </div> <div id="screenNovaFalha" class="screen">
+        <div class="card">
+            <label>Nome do Poço</label>
+            <input type="text" id="fPoco" placeholder="Ex: CAC-0004">
+            
+            <label>Método</label>
+            <select id="fMetodo">
+                <option value="BCS">BCS</option>
+                <option value="Gás Lift">Gás Lift</option>
+                <option value="BM">BM</option>
+                <option value="Surgente">Surgente</option>
+            </select>
+
+            <label>Status do Poço</label>
+            <input type="text" id="fStatus" placeholder="Ex: Produzindo">
+
+            <label>Tipo de Falha</label>
+            <textarea id="fTipo" rows="2" placeholder="Descreva a falha"></textarea>
+
+            <label>Local da Falha</label>
+            <input type="text" id="fLocal" placeholder="Ex: Anular A">
+
+            <label>Acompanhamento</label>
+            <input type="text" id="fAcomp" placeholder="Ex: Diário"></textarea>
+
+            <button class="btn-primary" id="btnSalvarFalha" onclick="enviarNovaFalha()">SALVAR FALHA</button>
+            <button class="btn-outline" onclick="changeScreen('screenHistoricoFalhas', 'POÇOS COM FALHAS')">CANCELAR</button>
+        </div>
+    </div>
+
+    <div id="screenMenu" class="screen">
+        <button class="btn-primary" onclick="changeScreen('screenNovaPS', 'NOVA PS')">NOVA PASSAGEM (PS)</button>
+        <button class="btn-outline" onclick="abrirLeituraRascunho()">VER RASCUNHO SALVO</button>
+        <button class="btn-outline" onclick="loadEnviadas()">HISTÓRICO (ENVIADAS)</button>
+        <button class="btn-outline" onclick="loadPoçosfalhas()">HISTÓRICO DE POÇOS COM FALHAS</button>
+        
+    <button class="btn-outline" onclick="changeScreen('screenConfig', 'AJUSTES DE ACESSO')" style="margin-top:20px; color:#666; font-size:0.8em;">
+        ⚙️ ALTERAR LOGIN/SENHA
+    </button>
+    
+    <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+    
+    <button class="btn-outline" onclick="logout()" style="border-color:#d32f2f; color:#d32f2f;">SAIR</button>
+</div>
+
+<div id="screenConfig" class="screen">
+    <div class="card">
+        <h3 style="text-align:center; color: var(--primary);">Alterar Dados de Acesso</h3>
+        
+        <label>Novo Usuário</label>
+        <input type="text" id="newUsername" placeholder="Ex: Petro">
+        
+        <label style="margin-top:10px; display:block;">Nova Senha</label>
+        <input type="password" id="newPassword" placeholder="Digite a nova senha">
+        
+        <button class="btn-primary" onclick="salvarNovoAcesso()" style="margin-top:20px;">SALVAR ALTERAÇÕES</button>
+        <button class="btn-outline" onclick="changeScreen('screenMenu', 'PS DIGITAL')" style="margin-top:10px;">VOLTAR</button>
+    </div>
+</div>
+
+    <div id="screenNovaPS" class="screen">
+        <div class="card">
+            <div class="section-title">01 - Identificação</div>
+            <label>Seu Nome</label><input type="text" id="psNome" placeholder="Digite seu nome">
+            <label>Localidade</label>
+            <select id="psLocal"><option value="Bahia">Bahia</option><option value="Potiguar">Potiguar</option></select>
+            <label>Data do Relatório</label><input type="date" id="psDataRel">
+            <div class="row">
+                <div class="col"><label>Início Período</label><input type="date" id="dataInicio"></div>
+                <div class="col"><label>Fim Período</label><input type="date" id="dataFim"></div>
+            </div>
+
+            <div class="section-title">02 - Checklists</div>
+            <div class="row">
+                <div class="col"><label>Realizados</label><input type="number" id="checkReal" value="0"></div>
+                <div class="col"><label>Pendentes</label><input type="number" id="checkPend" value="0"></div>
+            </div>
+            <label>Descrição das Pendências</label><textarea id="checkNomesPend" rows="2" placeholder="Ex: ASB-0001"></textarea>
+
+            <div class="section-title">03 - Falhas e Ocorrências</div>
+            <div class="row">
+                <div class="col"><label>Acomp.</label><input type="number" id="totalAcomp" value="0"></div>
+                <div class="col"><label>Novas</label><input type="number" id="totalNovas" value="0"></div>
+            </div>
+            <label>Relato de Falhas</label><textarea id="falhasDesc" rows="3"></textarea>
+            
+            <div class="section-title">04 - Outros Recursos</div>
+            <label>Total Nomenclaturas</label><input type="number" id="nomTotal" value="0">
+            <label>Descrição Nomenclaturas</label><textarea id="nomDesc" rows="2"></textarea>
+            
+            <label>Total PT's Liberadas</label><input type="number" id="ptTotal" value="0">
+            <label>Informações das PT's</label><textarea id="ptDesc" rows="2"></textarea>
+           
+            <div class="section-title">05 - Teste de DHSV</div>
+            <div class="row">
+                <div class="col">
+                    <label>Realizados (DHSV)</label>
+                    <input type="number" id="checkRealDHSV" value="0" oninput="gerarCamposDHSV()">
+                </div>               
+            </div>
+            <div id="containerDHSV"></div> <label>Descrição do teste DHSV</label><textarea id="dhsvDesc" rows="2" placeholder="Notas adicionais..."></textarea>
+
+            <div class="section-title">06 - Observações</div>
+            <label>Outras Informações</label><textarea id="infoOutros" rows="2" placeholder="Observações adicionais..."></textarea>
+
+            <button class="btn-primary" onclick="salvarRascunho()">SALVAR E REVISAR</button>
+            <button class="btn-outline" onclick="changeScreen('screenMenu', 'PS DIGITAL')">CANCELAR</button>
+        </div>
+    </div>
+
+    <div id="screenLeitura" class="screen">
+        <div class="card">
+            <h3 id="tituloLeitura" class="no-print">Detalhes da Passagem</h3>
+            <button class="btn-whatsapp no-print" onclick="copiarParaWhatsapp()">📋 COPIAR PARA WHATSAPP</button>
+            <button class="btn-pdf no-print" onclick="window.print()">📄 SALVAR EM PDF</button>
+            
+            <div id="conteudoLeitura" class="view-content"></div>
+            
+            <div id="areaBotoesLeitura" class="no-print">
+                <button class="btn-primary" onclick="confirmarEnvio()">CONFIRMAR E FINALIZAR</button>
+                <button class="btn-outline" onclick="changeScreen('screenNovaPS', 'EDITAR PS')">VOLTAR E EDITAR</button>
+            </div>
+            <button class="btn-outline no-print" onclick="changeScreen('screenMenu', 'PS DIGITAL')" id="btnVoltarMenu" style="display:none">VOLTAR AO MENU</button>
+        </div>
+    </div>
+
+    <div id="screenHistorico" class="screen">
+        <h3>Histórico de Enviadas</h3>
+        <div id="listaHistorico"></div>
+        <button class="btn-outline" onclick="changeScreen('screenMenu', 'PS DIGITAL')">VOLTAR</button>
+    </div>
+</div>
+<div id="screenHistoricoFalhas" class="screen">
+    <h3>Histórico de Poços com Falhas</h3>
+    <button class="btn-primary" onclick="changeScreen('screenNovaFalha', 'REGISTRAR FALHA')" style="margin-bottom: 15px;">+ ADICIONAR NOVA FALHA</button>
+    <div id="listaFalhas"></div>
+    <button class="btn-outline" onclick="changeScreen('screenMenu', 'PS DIGITAL')">VOLTAR</button>
+</div>
+
+<script>
+let rascunhoAtivo = null;
+window.dbNuvem = [];
+const URL_API = "https://script.google.com/macros/s/AKfycbwabdBcSb2ubtOI5G3hw5TeUAgAgppmr5B2klLyxE1eBckS_boEPTKAjoSHtzD1R9UChQ/exec"; 
+
+// Formata data de YYYY-MM-DD para DD/MM/YYYY
+function formatarDataBR(dataStr) {
+    if (!dataStr) return "---";
+    const partes = dataStr.split('T')[0].split('-');
+    if(partes.length < 3) return dataStr;
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+}
+
+function changeScreen(id, title) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if(title) document.getElementById('mainHeader').innerText = title;
+    window.scrollTo(0,0);
+}
+
+function gerarCamposDHSV() {
+    const qtd = parseInt(document.getElementById('checkRealDHSV').value) || 0;
+    const container = document.getElementById('containerDHSV');
+    container.innerHTML = "";
+    for (let i = 1; i <= qtd; i++) {
+        const div = document.createElement('div');
+        div.className = 'row';
+        div.style.marginBottom = "10px";
+        div.innerHTML = `
+            <div class="col" style="flex: 2;">
+                <label>Poço ${i}</label>
+                <input type="text" class="dhsv-poco" placeholder="Nome do Poço">
+            </div>
+            <div class="col" style="flex: 1;">
+                <label>Status</label>
+                <select class="dhsv-status">
+                    <option value="Sim">Sim</option>
+                    <option value="Não">Não</option>
+                </select>
+            </div>`;
+        container.appendChild(div);
+    }
+}
+function loadPoçosfalhas() { 
+    changeScreen('screenHistoricoFalhas', 'POÇOS COM FALHAS');
+    const lista = document.getElementById('listaFalhas');
+    lista.innerHTML = "<p style='text-align:center;'>Buscando dados na Página 2...</p>";
+
+    const cacheBuster = "&t=" + new Date().getTime();
+
+    fetch(URL_API + "?aba=falhas" + cacheBuster)
+        .then(res => res.json())
+        .then(dados => {
+            lista.innerHTML = "";
+            if (!dados || dados.length === 0) {
+                lista.innerHTML = "<p style='text-align:center;'>Nenhum registro encontrado na Página 2.</p>";
+                return;
+            }
+
+            dados.reverse().forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.borderLeft = "5px solid #d32f2f"; 
+                // Flexbox para alinhar texto à esquerda e botão à direita
+                card.style.display = "flex";
+                card.style.justifyContent = "space-between";
+                card.style.alignItems = "center";
+                
+                // Captura o ID da falha (geralmente na primeira coluna)
+                const idFalha = item.id || item['data.id'] || Object.values(item)[0];
+                
+                card.innerHTML = `
+                    <div style="line-height:1.4; flex-grow: 1;">
+                        <b style="color:#d32f2f; font-size:1.1em;">POÇO: ${item['Poço'] || item['Poco'] || '---'}</b><br>
+                        <small><b>Método:</b> ${item['Método'] || item['Metodo'] || '---'}</small><br>
+                        <small><b>Status:</b> ${item['Status do poço'] || item['Status_do_poco'] || '---'}</small><br>
+                        <small><b>Tipo de Falha:</b> ${item['Tipo de Falha'] || item['Tipo_de_Falha'] || '---'}</small><br>
+                        <small><b>Local:</b> ${item['Local da falha'] || item['Local_da_falha'] || '---'}</small>
+                        <hr style="border:0; border-top:1px solid #eee; margin: 8px 0;">
+                        <div style="font-size:0.9em; color:#555;">
+                            <b>Acompanhamento:</b><br>${item['Acompanhamento'] || 'Nenhum registro'}
+                        </div>
+                    </div>
+                    <button class="btn-delete-small" onclick="excluirFalha('${idFalha}')" style="position:static; transform:none; margin-left: 10px;">
+                        🗑️
+                    </button>
+                `;
+                lista.appendChild(card);
+            });
+        })
+        .catch(err => {
+            lista.innerHTML = "<p style='text-align:center; color:red;'>Erro ao carregar dados.</p>";
+            console.error(err);
+        });
+}
+function excluirFalha(id) {
+    if (confirm("Deseja realmente excluir este registro de falha?")) {
+        fetch(URL_API, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({ 
+                action: "delete", 
+                id: id, 
+                origem: "falhas" // Informa ao Script que deve apagar na Página 2
+            })
+        }).then(() => {
+            alert("Solicitação de exclusão enviada!");
+            // Aguarda um pouco e recarrega a lista
+            setTimeout(loadPoçosfalhas, 1500); 
+        }).catch(err => alert("Erro ao excluir: " + err));
+    }
+}
+function enviarNovaFalha() {
+    const btn = document.getElementById('btnSalvarFalha');
+    const dados = {
+        aba: "falhas", // Indica para o Script que deve salvar na Página2
+        Poço: document.getElementById('fPoco').value,
+        Método: document.getElementById('fMetodo').value,
+        "Status do poço": document.getElementById('fStatus').value,
+        "Tipo de Falha": document.getElementById('fTipo').value,
+        "Local da falha": document.getElementById('fLocal').value,
+        Acompanhamento: document.getElementById('fAcomp').value
+    };
+
+    if (!dados.Poço) { alert("O nome do poço é obrigatório!"); return; }
+
+    btn.innerText = "ENVIANDO...";
+    btn.disabled = true;
+
+    fetch(URL_API, { method: 'POST', mode: 'no-cors', body: JSON.stringify(dados) })
+    .then(() => {
+        alert("✅ Falha registrada com sucesso!");
+        btn.innerText = "SALVAR FALHA";
+        btn.disabled = false;
+        // Limpa os campos
+        document.querySelectorAll('#screenNovaFalha input, #screenNovaFalha textarea').forEach(i => i.value = "");
+        loadPoçosfalhas(); // Recarrega a lista
+    })
+    .catch(err => {
+        alert("Erro ao salvar.");
+        btn.disabled = false;
+    });
+}
+function salvarRascunho() {
+    // Coleta dados dinâmicos dos poços DHSV
+    const nomes = Array.from(document.querySelectorAll('.dhsv-poco')).map(i => i.value || "?");
+    const status = Array.from(document.querySelectorAll('.dhsv-status')).map(s => s.value);
+    const listaDHSV = nomes.map((n, i) => `${n} (${status[i]})`).join(" | ");
+
+    rascunhoAtivo = {
+        id: Date.now().toString(),
+        nome: document.getElementById('psNome').value,
+        local: document.getElementById('psLocal').value,
+        dataRel: document.getElementById('psDataRel').value,
+        inicio: document.getElementById('dataInicio').value,
+        fim: document.getElementById('dataFim').value,
+        checkR: document.getElementById('checkReal').value,
+        checkP: document.getElementById('checkPend').value,
+        checkD: document.getElementById('checkNomesPend').value,
+        acompT: document.getElementById('totalAcomp').value,
+        novasT: document.getElementById('totalNovas').value,
+        falhasD: document.getElementById('falhasDesc').value,
+        nomT: document.getElementById('nomTotal').value,
+        nomD: document.getElementById('nomDesc').value,
+        ptT: document.getElementById('ptTotal').value,
+        ptD: document.getElementById('ptDesc').value,
+        checkReal: document.getElementById('checkRealDHSV').value, // Qtd DHSV
+        checkNomesPend: listaDHSV,                                 // Lista de Poços
+        notasDHSV: document.getElementById('dhsvDesc').value,      // Notas DHSV
+        outros: document.getElementById('infoOutros').value
+    };
+    abrirLeitura(rascunhoAtivo, true);
+}
+
+function abrirLeitura(dados, modoEnvio) {
+    rascunhoAtivo = dados;
+    const cont = document.getElementById('conteudoLeitura');
+    cont.innerHTML = `
+        <div class="view-item"><b>Colaborador</b>${dados.nome || '-'}</div>
+        <div class="view-item"><b>Data Relatório</b>${formatarDataBR(dados.dataRel)}</div>
+        <div class="view-item"><b>Período</b>${formatarDataBR(dados.inicio)} a ${formatarDataBR(dados.fim)}</div>
+        
+        <div class="section-title">Checklists</div>
+        <div class="view-item"><b>Realizados / Pendentes</b>${dados.checkR} / ${dados.checkP}</div>
+        <div class="view-item"><b>Descrição Pendências</b>${dados.checkD || 'Nenhuma'}</div>
+
+        <div class="section-title">Teste DHSV</div>
+        <div class="view-item"><b>Quantidade</b>${dados.checkReal || '0'}</div>
+        <div class="view-item"><b>Poços</b>${dados.checkNomesPend || '-'}</div>
+        <div class="view-item"><b>Notas DHSV</b>${dados.notasDHSV || '-'}</div>
+
+        <div class="section-title">Observações Gerais</div>
+        <div class="view-item"><b>Outros</b>${dados.outros || '-'}</div>
+    `;
+    document.getElementById('areaBotoesLeitura').style.display = modoEnvio ? 'block' : 'none';
+    document.getElementById('btnVoltarMenu').style.display = modoEnvio ? 'none' : 'block';
+    changeScreen('screenLeitura', modoEnvio ? 'REVISAR' : 'DETALHES');
+}
+
+function copiarParaWhatsapp() {
+    const d = rascunhoAtivo;
+    if(!d) {
+        alert("Erro: Nenhum dado encontrado para copiar.");
+        return;
+    }
+
+    // Montando o texto com TODAS as informações do formulário
+    const texto = `*01-PASSAGEM DE SERVIÇO - PETRO POÇOS*\n\n` +
+        `👤 *Colaborador:* ${d.nome || '-'}\n` +
+        `📍 *Local:* ${d.local || '-'}\n` +
+        `📅 *Data Relatório:* ${formatarDataBR(d.dataRel)}\n` +
+        `⏰ *Período:* ${d.inicio || '00:00'} às ${d.fim || '00:00'}\n\n` +
+
+        `*02 - CHECKLIST POÇOS*\n` +
+        `✅ Realizadas: ${d.checkR || 0}\n` +
+        `⏳ Pendentes: ${d.checkP || 0}\n` +
+        `📝 Descrição: ${d.checkD || '-'}\n\n` +
+
+        `*03 - ACOMPANHAMENTO*\n` +
+        `📊 Total Acomp.: ${d.acompT || 0}\n` +
+        `🆕 Total Novas: ${d.novasT || 0}\n\n` +
+
+        `*03A - NOVAS FALHAS DE CSB*\n` +
+        `⚠️ Descrição: ${d.falhasD || 'Nenhuma'}\n\n` +
+
+        `*04 - NOMEN / PT*\n` +
+        `📋 Nomenclaturas Total: ${d.nomT || 0} (${d.nomD || '-'})\n` +
+        `🛠️ PT Total: ${d.ptT || 0} (${d.ptD || '-'})\n\n` +
+
+        `*05 - TESTE DE DHSV*\n` +
+        `🧪 Qtd Realizada: ${d.checkReal || 0}\n` +
+        `🔍 Detalhes: ${d.checkNomesPend || '-'}\n` +
+        `📝 Notas DHSV: ${d.notasDHSV || '-'}\n\n` +
+
+        `*06 - OBSERVAÇÕES*\n` +
+        `ℹ️ ${d.outros || '-'}`;
+
+    // Copia para a área de transferência
+    navigator.clipboard.writeText(texto).then(() => {
+        alert("✅ Relatório COMPLETO copiado!\n\nAgora cole no grupo do WhatsApp.");
+        
+        // Volta para o Menu Principal e não desloga
+        changeScreen('screenMenu', 'PS DIGITAL');
+        
+        // Limpa o rascunho para a próxima
+        rascunhoAtivo = null; 
+    }).catch(err => {
+        alert("Erro ao copiar: " + err);
+    });
+}
+
+function confirmarEnvio() {
+    const btn = document.querySelector("#areaBotoesLeitura .btn-primary");
+    btn.innerText = "ENVIANDO...";
+    btn.disabled = true;
+
+    fetch(URL_API, { method: 'POST', mode: 'no-cors', body: JSON.stringify(rascunhoAtivo) })
+    .then(() => { 
+        alert("✅ Dados salvos na planilha!"); 
+        // AQUI ESTÁ O SEGREDO: Mudamos o texto do botão em vez de dar reload
+        btn.innerText = "✓ SALVO COM SUCESSO";
+        btn.style.backgroundColor = "#28a745"; // Fica verde
+    })
+    .catch(() => {
+        alert("Erro ao conectar.");
+        btn.innerText = "CONFIRMAR E FINALIZAR";
+        btn.disabled = false;
+    });
+}
+
+// Funções de Login e Histórico permanecem as mesmas
+function realizarLogin() {
+    const u = document.getElementById('loginUser').value;
+    const p = document.getElementById('loginPass').value;
+    const su = localStorage.getItem('userLogin') || 'Petro';
+    const sp = localStorage.getItem('userPass') || '@1234';
+    if (u === su && p === sp) { changeScreen('screenMenu', 'PS DIGITAL'); } 
+    else { alert("Acesso incorreto!"); }
+}
+
+function loadEnviadas() { 
+    changeScreen('screenHistorico', 'HISTÓRICO');
+    const lista = document.getElementById('listaHistorico');
+    lista.innerHTML = "<p style='text-align:center;'>Buscando registros...</p>";
+
+    fetch(URL_API)
+        .then(res => res.json())
+        .then(dados => {
+            window.dbNuvem = dados;
+            lista.innerHTML = "";
+            
+            if (!dados || dados.length === 0) {
+                lista.innerHTML = "<p style='text-align:center;'>Nenhum registro encontrado.</p>";
+                return;
+            }
+
+            dados.reverse().forEach(ps => {
+                const item = document.createElement('div');
+                item.className = 'card';
+                item.style.display = "flex";
+                item.style.justifyContent = "space-between";
+                item.style.alignItems = "center";
+
+                // Lógica para aceitar tanto "nome" quanto "data.nome"
+                const nomeExibir = ps.nome || ps['data.nome'] || 'Sem Nome';
+                const dataExibir = ps.dataRel || ps['data.dataRel'] || '';
+                const idRegistro = ps.id || ps['data.id'];
+
+                item.innerHTML = `
+                    <div onclick="abrirPeloId('${idRegistro}')" style="cursor:pointer; flex: 1;">
+                        <b>${nomeExibir}</b><br>
+                        <small>${formatarDataBR(dataExibir)}</small>
+                    </div>
+                    <button class="btn-delete-small" onclick="excluirPS('${idRegistro}')" style="position:static; transform:none;">
+                        🗑️
+                    </button>`;
+                lista.appendChild(item);
+            });
+        })
+        .catch(err => {
+            lista.innerHTML = "<p style='text-align:center; color:red;'>Erro ao carregar histórico.</p>";
+            console.error(err);
+        });
+}
+
+function abrirPeloId(id) {
+    // Procura o registro comparando tanto 'id' quanto 'data.id'
+    const ps = window.dbNuvem.find(i => (i.id == id || i['data.id'] == id));
+    if(ps) {
+        // Mapeia os dados para o formato que a função abrirLeitura espera
+        const dadosFormatados = {
+            nome: ps.nome || ps['data.nome'],
+            dataRel: ps.dataRel || ps['data.dataRel'],
+            inicio: ps.inicio || ps['data.inicio'],
+            fim: ps.fim || ps['data.fim'],
+            checkR: ps.checkR || ps['data.checkR'],
+            checkP: ps.checkP || ps['data.checkP'],
+            checkD: ps.checkD || ps['data.checkD'],
+            checkReal: ps.checkReal || ps['data.checkReal'],
+            checkNomesPend: ps.checkNomesPend || ps['data.checkNomesPend'],
+            notasDHSV: ps.notasDHSV || ps['data.notasDHSV'],
+            outros: ps.outros || ps['data.outros']
+        };
+        abrirLeitura(dadosFormatados, false);
+    }
+}
+function excluirPS(id) {
+    // Impede que abra os detalhes da PS ao clicar no botão de excluir
+    if (event) event.stopPropagation();
+
+    if (confirm("Deseja excluir este registro da planilha?")) {
+        fetch(URL_API, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({ action: "delete", id: id })
+        }).then(() => {
+            alert("Solicitação de exclusão enviada!");
+            // Ajustado para o nome da sua função atual
+            setTimeout(loadEnviadas, 1500); 
+        });
+    }
+}
+function logout() { location.reload(); }
+function resetAcesso() { localStorage.clear(); location.reload(); }
+function abrirLeituraRascunho() { if(rascunhoAtivo) abrirLeitura(rascunhoAtivo, true); else alert("Sem rascunho."); }
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('Service Worker registrado!', reg))
+        .catch(err => console.error('Erro ao registrar SW:', err));
+    });
+  }
+</script>
+</body>
+</html>

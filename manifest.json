@@ -1,0 +1,21 @@
+{
+  "name": "PS Digital - Sistema de Passagem",
+  "short_name": "PS Digital",
+  "description": "Sistema de Passagem de Serviço Offline",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#004d26",
+  "theme_color": "#004d26",
+  "icons": [
+    {
+      "src": "PSdigital.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "PSdigital.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
